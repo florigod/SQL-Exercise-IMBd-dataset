@@ -28,7 +28,7 @@ This project is a personal exercise to practice **SQL with PostgreSQL**, using a
     psql -d imdb -f sql/04_indexes_views_funcs.sql
     ````
 
-## 📋 Features included in the 04 SQL script
+## Features included in the 04 SQL script
 - **Indexes** on frequently queried fields to improve performance.  
 - **Views** to simplify common queries.  
 - **Functions** to encapsulate reusable logic. Example:  
