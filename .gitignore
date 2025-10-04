@@ -6,12 +6,12 @@ __pycache__/
 .venv/
 venv/
 
-# Data (para no subir datasets pesados a GitHub)
+# Data
 data/*.csv
 data/*.xlsx
 data/*.zip
 
-# Entornos / configuraciones locales
+# Envs
 .env
 .idea/
 .vscode/

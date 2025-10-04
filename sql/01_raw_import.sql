@@ -1,3 +1,5 @@
+-- Creates table for raw dataset import
+
 CREATE TABLE imdb_raw (
     rank INT PRIMARY KEY,
     title TEXT,

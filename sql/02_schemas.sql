@@ -1,3 +1,5 @@
+-- Creates normalized tables for database
+
 CREATE TABLE movies(
     movie_id SERIAL PRIMARY KEY,
     title TEXT UNIQUE NOT NULL,

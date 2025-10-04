@@ -1,8 +1,8 @@
--- 03_transform.sql
--- Transform: populate normalized schema from imdb_raw
+-- Populates normalized schema with the imdb_raw data
+
 BEGIN;
 
--- populate movies (votes and worldwide_gross cleaning)
+-- populate movies (+ rating, votes and worldwide_gross cleaning)
 INSERT INTO movies (title, imdb_rating, votes, meta_score, worldwide_gross)
 SELECT DISTINCT ON (title)
        TRIM(BOTH '"' FROM NULLIF(title, '')) AS title,
@@ -33,7 +33,7 @@ ORDER BY title, votes_clean DESC;  -- Orders by most votes
 
 
 
--- populate movie_extra_texts (1:1)
+-- populate movie_extra_texts (1:1 relation)
 INSERT INTO movie_extra_texts (movie_id, poster_url, video_url, movie_description, summary)
 SELECT
     m.movie_id,
@@ -56,7 +56,7 @@ ON CONFLICT (tag_name) DO NOTHING;
 
 -- populate movie_tags relation (ignores duplicates using ON CONFLICT)
 INSERT INTO movie_tags (movie_id, tag_id)
-SELECT DISTINCT  -- elimina duplicados internos antes del insert
+SELECT DISTINCT 
     m.movie_id,
     t.tag_id
 FROM imdb_raw r
@@ -91,7 +91,7 @@ FROM (
 WHERE person_name IS NOT NULL AND person_name <> ''
 ON CONFLICT (person_name) DO NOTHING;
 
--- populate writers relation (many-to-many). writers table has PK (movie_id, writer_person_id)
+-- populate writers relation (many-to-many relation) - writers table has PK (movie_id, writer_person_id)
 INSERT INTO writers (movie_id, writer_person_id)
 SELECT DISTINCT
     m.movie_id,
@@ -103,7 +103,7 @@ JOIN people p ON p.person_name = TRIM(BOTH '"' FROM writer_name)
 WHERE r.writers IS NOT NULL AND r.writers <> ''
 ON CONFLICT DO NOTHING;
 
--- populate directors relation (1:1 table: directors.movie_id PK)
+-- populate directors relation (1:1 relation table) - directors.movie_id is PK
 INSERT INTO directors (movie_id, director_person_id)
 SELECT
     m.movie_id,
@@ -114,7 +114,7 @@ JOIN people p ON p.person_name = TRIM(BOTH '"' FROM NULLIF(r.director, ''))
 WHERE r.director IS NOT NULL AND r.director <> ''
 ON CONFLICT (movie_id) DO NOTHING;
 
--- populate actors relation (many-to-many)
+-- populate actors relation (many-to-many relation)
 INSERT INTO actors (movie_id, actor_person_id)
 SELECT DISTINCT
     m.movie_id,
